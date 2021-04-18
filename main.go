@@ -8,38 +8,12 @@ import (
 	"os"
 	"encoding/csv"
 	"io"
-	"text/template"
 )
 
 // Item representation
 type Item struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
-}
-
-// Global, static list of items
-var itemList = []Item{
-	Item{Title: "Item A", Description: "The first item"},
-	Item{Title: "Item B", Description: "The second item"},
-	Item{Title: "Item C", Description: "The third item"},
-}
-
-// Controller for the / route (home)
-func homePage(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("./templates/index.html")
-	if err != nil {
-		// いったんpanic
-		panic(err.Error())
-	}
-	// いったんpanic
-	if err := t.Execute(w, nil); err != nil {
-		panic(err.Error())
-	}
-}
-
-// Contoller for the /items route
-func returnAllItems(w http.ResponseWriter, r *http.Request) {
-	respondWithJson(w, http.StatusOK, itemList)
 }
 
 func respondWithError(w http.ResponseWriter, code int, msg string) {
@@ -90,8 +64,6 @@ func singleCsvHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", homePage)
-	http.HandleFunc("/items", returnAllItems)
 	http.HandleFunc("/singleImport", singleCsvHandler)
 	err := http.ListenAndServe(":8000", nil)
 	if err != nil {
